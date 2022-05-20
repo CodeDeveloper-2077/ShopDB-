@@ -10,7 +10,7 @@ namespace ShopDBContext
     {
         static ShopDBContext()
         {
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges());
+            //Database.SetInitializer(new DropCreateDatabaseIfModelChanges());
             //Database.SetInitializer(new IDatabaseInitializer());
         }
         public ShopDBContext()

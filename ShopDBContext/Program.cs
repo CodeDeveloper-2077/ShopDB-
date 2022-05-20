@@ -8,6 +8,7 @@ namespace ShopDBContext
 {
     class Program
     {
+        static ShopDBContext db = new ShopDBContext();
         static void OutputCustomers(IQueryable<Customer> customers)
         {
             Console.ForegroundColor = ConsoleColor.Red;
@@ -85,13 +86,56 @@ namespace ShopDBContext
 
         static void Main(string[] args)
         {
-            using (ShopDBContext db = new ShopDBContext())
+            using (db)
             {
                 OutputCustomers(db.Customers);
                 OutputOrders(db.Orders);
                 OutputStudents(db.Students);
                 OutputCourses(db.Courses);
+
+                foreach (var student in Students())
+                {
+                    Console.WriteLine("{0}", student);
+                    Console.WriteLine(new string('-', 50));
+                }
+
+                foreach(var student in StudentsOrderBy())
+                {
+                    Console.WriteLine("{0}", student);
+                    Console.WriteLine(new string('.', 100));
+                }
+
+                foreach (var student in StudentsOrderByDescending())
+                {
+                    Console.WriteLine("{0}", student);
+                    Console.WriteLine(new string('~', 100));
+                }
             }
+        }
+
+        static IEnumerable<string> Students()
+        {
+            return from student in db.Students.ToList()
+                   where student.Courses.Contains(db.Courses.FirstOrDefault(c => c.CourseName == "ASP.NET MVC"))
+                   let Name = student.FName + " " +  student.LName
+                   let outputData = string.Format("{0}. {1}", student.StudentId, Name)
+                   select outputData;
+        }
+
+        static IEnumerable<string> StudentsOrderBy()
+        {
+            return from student in db.Students.ToList()
+                   let Name = student.FName + " " + student.LName
+                   orderby Name ascending
+                   select Name;
+        }
+
+        static IEnumerable<string> StudentsOrderByDescending()
+        {
+            return from student in db.Students.ToList()
+                   let Name = student.FName + " " + student.LName
+                   orderby Name descending
+                   select Name;
         }
     }
 }
