@@ -2,11 +2,17 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
+using ShopDBContext.Initialize_Database;
 
 namespace ShopDBContext
 {
     public partial class ShopDBContext : DbContext
     {
+        static ShopDBContext()
+        {
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges());
+            //Database.SetInitializer(new IDatabaseInitializer());
+        }
         public ShopDBContext()
             : base("name=ShopDBContext")
         {
